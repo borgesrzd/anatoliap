@@ -1,0 +1,20 @@
+import assert from 'node:assert/strict';
+import {readFile} from 'node:fs/promises';
+import names from '../app/anatomy.pt-BR.json' with {type:'json'};
+import {anatomicalName, matchesAnatomy} from '../app/localization.ts';
+import {atlasTools} from '../app/agent-tools.ts';
+
+const atlas = JSON.parse(await readFile('public/models/atlas.json', 'utf8'));
+const entries = [...atlas.parts, ...atlas.concepts];
+assert.equal(Object.keys(names).length, new Set(entries.map(item => item.id)).size);
+for (const item of entries) assert.ok(names[item.id]?.trim(), `Missing translation: ${item.id}`);
+const heart = atlas.concepts.find(item => item.name === 'heart');
+assert.equal(anatomicalName(heart), 'Coração');
+for (const query of ['coração', 'coracao', 'CORAÇÃO', 'heart', heart.id]) assert.ok(matchesAnatomy(heart, query));
+assert.equal(matchesAnatomy(heart, 'inexistente'), false);
+const [find, inspect] = atlasTools(atlas, () => {});
+assert.ok(find.execute({query:'coracao'}).some(item => item.id === heart.id));
+assert.equal(inspect.execute({id:heart.id}).name, 'Coração');
+const mesh = atlas.parts[0];
+assert.equal(anatomicalName({id:mesh.conceptId, name:mesh.name, displayName:anatomicalName(mesh)}), names[mesh.id]);
+console.log(`Validated ${entries.length} translations, bilingual/accent-insensitive search, tool responses and mesh labels.`);

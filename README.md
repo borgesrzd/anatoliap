@@ -1,5 +1,13 @@
 # Human Atlas
 
+## Português brasileiro
+
+A interface e os nomes anatômicos estão em português brasileiro. A busca aceita português com ou sem acentos, inglês e identificadores originais. As traduções ficam em `app/anatomy.pt-BR.json`, por ID, e os nomes originais e a geometria permanecem nos dados da fonte.
+
+O catálogo começou com tradução automática via Google Translate e recebeu correções manuais por amostragem. Ainda requer revisão anatômica especializada integral; cobertura automatizada não equivale a validação terminológica. A aplicação não utiliza tradução remota em tempo de execução.
+
+Para corrigir um termo, altere a entrada correspondente no catálogo e execute `node scripts/validate-localization.mjs`, além das verificações abaixo. Ao regenerar o atlas, preserve as entradas revisadas, complete traduções para novos IDs e remova IDs obsoletos. O script opcional `node scripts/translate-anatomy.mjs` consulta um serviço externo e gera apenas candidatos em `scripts/anatomy-translations.generated.json`; não substitui o catálogo revisado. Não é necessário executá-lo para desenvolver ou publicar.
+
 An interactive 3D anatomy explorer built with React, Three.js, and shadcn/ui. Take the BodyParts3D adult male reference apart into **2,234 individually selectable meshes**, explore **15 anatomical systems**, and search **3,432 named concepts**.
 
 **[Explore the live demo]()**
